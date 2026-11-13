@@ -68,17 +68,6 @@ export const WeddingVideo: React.FC = () => {
     return videoRef.current;
   }, [isFullscreen]);
 
-  // Synchronize playback between normal and fullscreen video elements
-  const syncPlayback = useCallback((source: HTMLVideoElement, target: HTMLVideoElement) => {
-    target.currentTime = source.currentTime;
-    target.muted = isMuted;
-    if (!source.paused) {
-      target.play().catch(() => { });
-    } else {
-      target.pause();
-    }
-  }, [isMuted]);
-
   // Time & progress update
   const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     const vid = e.currentTarget;
@@ -185,12 +174,30 @@ export const WeddingVideo: React.FC = () => {
   // Enter Full Screen
   const handleEnterFullscreen = () => {
     const currentVid = videoRef.current;
+    const currentTimeSnapshot = currentVid ? currentVid.currentTime : 0;
+
+    // 1. Automatically unmute sound in fullscreen as requested
+    setIsMuted(false);
+    pauseForVideo(); // Ensure background music is paused
+
+    // 2. CRITICAL: Stop and mute mini video immediately so it NEVER plays in background!
+    if (currentVid) {
+      currentVid.pause();
+      currentVid.muted = true;
+    }
+
     setIsFullscreen(true);
     resetControlsTimeout();
 
+    // 3. Play fullscreen video with sound automatically
     setTimeout(() => {
-      if (fullscreenVideoRef.current && currentVid) {
-        syncPlayback(currentVid, fullscreenVideoRef.current);
+      const fsVid = fullscreenVideoRef.current;
+      if (fsVid) {
+        fsVid.currentTime = currentTimeSnapshot;
+        fsVid.muted = false; // Sound enabled automatically
+        fsVid.play()
+          .then(() => setIsPlaying(true))
+          .catch((e) => console.log('Fullscreen play failed:', e));
       }
     }, 50);
   };
@@ -199,19 +206,27 @@ export const WeddingVideo: React.FC = () => {
   const handleExitFullscreen = () => {
     const fsVid = fullscreenVideoRef.current;
     const normalVid = videoRef.current;
+    const currentTimeSnapshot = fsVid ? fsVid.currentTime : 0;
 
-    if (fsVid && normalVid) {
+    // 1. Stop and mute fullscreen video immediately
+    if (fsVid) {
+      fsVid.pause();
+      fsVid.muted = true;
+    }
+
+    setIsFullscreen(false);
+
+    // 2. Resume normal mini video on loop from where fullscreen left off
+    if (normalVid) {
       if (isEnded) {
         normalVid.currentTime = 0;
         setIsEnded(false);
       } else {
-        normalVid.currentTime = fsVid.currentTime;
+        normalVid.currentTime = currentTimeSnapshot;
       }
       normalVid.muted = isMuted;
-      normalVid.play().catch(() => { });
+      normalVid.play().then(() => setIsPlaying(true)).catch(() => { });
     }
-
-    setIsFullscreen(false);
 
     // Smooth scroll to Moments of Love section
     const galleryElement = document.getElementById('gallery');
@@ -232,6 +247,9 @@ export const WeddingVideo: React.FC = () => {
 
     const observer = new IntersectionObserver(
       (entries) => {
+        // While fullscreen is open, do not let intersection observer touch mini video
+        if (isFullscreen) return;
+
         entries.forEach((entry) => {
           const vid = videoRef.current;
           if (!vid) return;
