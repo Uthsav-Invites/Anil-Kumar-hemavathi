@@ -11,9 +11,6 @@ const Couple: React.FC = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <div className="text-xs font-bold text-[#800000] tracking-[0.3em] uppercase mb-1">
-            Devanna Gari Wedding
-          </div>
           <h2 className="text-4xl md:text-5xl font-script text-[#800000] mb-2">The Groom & Bride</h2>
           <p className="text-[#4A0E0E] font-serif tracking-widest uppercase text-sm">Two Souls, One Sacred Bond</p>
           <motion.div

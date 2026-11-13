@@ -1,124 +1,146 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] },
+  }),
+};
 
 const Footer: React.FC = () => {
   return (
-    <>
-      <div className="pt-4 pb-0 bg-transparent text-center relative overflow-hidden z-0">
-        <div className="max-w-4xl mx-auto px-4 relative z-10 flex flex-col items-center">
+    <footer className="relative overflow-hidden bg-transparent">
+      {/* Decorative Traditional Wedding Procession Motif */}
+      <div className="pt-2 pb-3 text-center relative z-10">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col items-center">
           <img
             src="/0.png"
             alt="Traditional Wedding Footer"
-            className="w-full h-auto max-w-2xl mix-blend-multiply transform hover:scale-[1.02] transition-transform duration-500 mb-6"
+            className="w-full h-auto max-w-xl mix-blend-multiply opacity-80"
           />
         </div>
       </div>
 
-      {/* Dark Maroon Designed & Crafted by Section */}
-      <footer className="w-full bg-gradient-to-b from-[#3E1108] via-[#300C06] to-[#1E0703] border-t-2 border-[#FFD700]/40 pt-7 pb-10 px-4 text-center relative z-10 shadow-[0_-10px_25px_rgba(0,0,0,0.4)]">
-        <div className="max-w-md mx-auto flex flex-col items-center">
-          
-          {/* Header: DESIGNED & CRAFTED BY */}
-          <div className="flex items-center justify-center gap-3 mb-5 w-full">
-            <div className="h-[1px] w-12 sm:w-20 bg-gradient-to-r from-transparent via-[#FFD700]/70 to-[#FFD700]/90"></div>
-            <span className="text-[10px] sm:text-xs font-traditional font-bold tracking-[0.25em] text-[#FFD700] uppercase drop-shadow">
-              DESIGNED & CRAFTED BY
+      {/* Regal Deep Velvet Maroon & Gold Luxury Footer */}
+      <div className="relative border-t-2 border-[#FFD700]/40 bg-gradient-to-b from-[#35060A] via-[#240306] to-[#180204] text-[#FFFDF8] shadow-[0_-12px_35px_rgba(40,4,8,0.35)]">
+
+        {/* Ambient Warm Golden Glow in Center */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-40"
+          style={{
+            background: 'radial-gradient(circle at 50% 30%, rgba(255, 215, 0, 0.2) 0%, rgba(24, 2, 4, 0) 70%)'
+          }}
+        />
+
+        {/* Snug & Compact Main Container */}
+        <div className="max-w-md mx-auto px-4 sm:px-6 pt-4 sm:pt-5 pb-6 sm:pb-7 flex flex-col items-center text-center relative z-10">
+
+          {/* Section Header Caption */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-20px' }}
+            custom={0.05}
+            variants={fadeUp}
+            className="flex items-center gap-2 mb-3"
+          >
+            <span className="h-px w-6 bg-gradient-to-r from-transparent to-[#FFD790]/40"></span>
+            <span className="text-[9px] sm:text-[10px] text-[#FFD708]/90 font-serif tracking-[0.32em] uppercase font-bold drop-shadow-sm">
+              Designed & Crafted by
             </span>
-            <div className="h-[1px] w-12 sm:w-20 bg-gradient-to-l from-transparent via-[#FFD700]/70 to-[#FFD700]/90"></div>
-          </div>
+            <span className="h-px w-6 bg-gradient-to-l from-transparent to-[#FFD700]/40"></span>
+          </motion.div>
 
-          {/* Middle Row: UDAY STUDIO Logo + Brand Info */}
-          <div className="flex items-center justify-center gap-6 sm:gap-8 my-1">
-            {/* Left: UDAY STUDIO Camera Logo */}
-            <div className="flex flex-col items-center text-center">
-              <span className="text-2xl sm:text-3xl font-black tracking-tight text-[#FFD700] leading-none drop-shadow-[0_0_12px_rgba(255,215,0,0.6)] font-sans">
-                UDAY
-              </span>
-              
-              {/* Camera body outline around STUDIO */}
-              <div className="relative mt-1 inline-flex items-center justify-center">
-                <svg viewBox="0 0 76 26" className="w-[72px] h-[24px]" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M 4 7 C 2 7 1 8 1 10 L 1 22 C 1 24 2 25 4 25 L 72 25 C 74 25 75 24 75 22 L 75 10 C 75 8 74 7 72 7 L 62 7 L 60 3 C 59.5 2 58.5 2 57 2 L 47 2 C 45.5 2 44.5 2 44 3 L 42 7 Z"
-                    stroke="#FFD700"
-                    strokeWidth="1.6"
-                    fill="rgba(255, 215, 0, 0.1)"
-                  />
-                  <text
-                    x="38"
-                    y="18.5"
-                    fill="#FFD700"
-                    fontSize="9.5"
-                    fontWeight="900"
-                    fontFamily="Montserrat, sans-serif"
-                    letterSpacing="2.5"
-                    textAnchor="middle"
-                  >
-                    STUDIO
-                  </text>
-                </svg>
-              </div>
-
-              <a
-                href="tel:9966657783"
-                className="text-[11px] sm:text-xs font-bold tracking-wider text-[#FFD700] mt-1 hover:text-white transition-colors"
-              >
-                9966657783
-              </a>
+          {/* Uday Studio Logo PNG + Cursive Name Beside + Spaced Text Links Below */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-20px' }}
+            custom={0.15}
+            variants={fadeUp}
+            className="flex items-center justify-center gap-3.5 sm:gap-4 my-2"
+          >
+            {/* Logo PNG without background box */}
+            <div className="shrink-0 flex items-center justify-center">
+              <img
+                src="/us1.png"
+                alt="Uday Studio"
+                className="h-15 sm:h-13 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,215,0,0.3)] hover:scale-105 transition-transform duration-300"
+              />
             </div>
 
-            {/* Right: Uday Studio Name + Links */}
-            <div className="flex flex-col items-start justify-center text-left">
-              <span className="font-script text-3xl sm:text-4xl text-[#FFD700] leading-tight drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">
+            {/* Name in cursive font + Space + Text Links */}
+            <div className="flex flex-col items-start text-left">
+              <h3 className="text-2xl sm:text-3xl font-script text-[#FFD700] tracking-wide leading-none drop-shadow-[0_2px_10px_rgba(255,215,0,0.4)]">
                 Uday Studio
-              </span>
-              
-              <div className="flex items-center gap-2 mt-1.5 text-[9px] sm:text-[10px] font-bold tracking-widest text-white/90">
+              </h3>
+
+              {/* Text Type Links with intentional vertical space */}
+              <div className="flex items-center gap-2 sm:gap-2.5 text-[10px] sm:text-[11px] font-serif tracking-widest uppercase mt-3 sm:mt-3.5">
                 <a
-                  href="https://wa.me/919966657783?text=Hi%20Uday%20Studio"
+                  href="https://wa.me/919966657783?text=Hi%20Uday%20Studio%2C%20I%20visited%20the%20wedding%20invitation%20website%20and%20would%20like%20to%20connect."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-[#FFD700] transition-colors"
+                  className="text-white/85 hover:text-[#FFD700] transition-colors duration-200 underline-offset-2 hover:underline font-medium"
                 >
-                  WHATSAPP
+                  WhatsApp
                 </a>
-                <span className="text-[#FFD700]/70">•</span>
+                <span className="text-[#FFD700]/50 select-none text-[8px]">•</span>
                 <a
-                  href="https://www.instagram.com"
+                  href="https://www.instagram.com/udaystudio_pgr?rpxt=MWxxb3B5bmR3bWh3aA=="
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-[#FFD700] transition-colors"
+                  className="text-white/85 hover:text-[#FFD700] transition-colors duration-200 underline-offset-2 hover:underline font-medium"
                 >
-                  INSTAGRAM
+                  Instagram
                 </a>
-                <span className="text-[#FFD700]/70">•</span>
+                <span className="text-[#FFD700]/50 select-none text-[8px]">•</span>
                 <a
-                  href="tel:9966657783"
-                  className="hover:text-[#FFD700] transition-colors"
+                  href="https://udaystudio.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/85 hover:text-[#FFD700] transition-colors duration-200 underline-offset-2 hover:underline font-medium"
                 >
-                  WEBSITE
+                  Website
                 </a>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Ornamental Divider with Diamond */}
-          <div className="flex items-center justify-center gap-3 my-4 w-full">
-            <div className="h-[1px] w-20 sm:w-32 bg-gradient-to-r from-transparent via-[#FFD700]/40 to-[#FFD700]/10"></div>
-            <span className="text-[#FFD700] text-[10px] select-none">◈</span>
-            <div className="h-[1px] w-20 sm:w-32 bg-gradient-to-l from-transparent via-[#FFD700]/40 to-[#FFD700]/10"></div>
-          </div>
+          {/* Luxury Filigree Divider */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={0.22}
+            variants={fadeUp}
+            className="flex items-center justify-center gap-2 w-full max-w-[180px] my-2"
+          >
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#FFD700]/30 to-transparent" />
+            <div className="w-1.5 h-1.5 rotate-45 border border-[#FFD700] bg-[#FFD700]/20" />
+            <div className="h-px flex-1 bg-gradient-to-l from-transparent via-[#FFD700]/30 to-transparent" />
+          </motion.div>
 
-          {/* Tagline */}
-          <p className="text-[10px] sm:text-xs text-[#FFD700]/80 italic font-serif tracking-wide flex items-center justify-center gap-1.5">
+          {/* Closing Signature */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            custom={0.28}
+            variants={fadeUp}
+            className="flex items-center justify-center gap-1.5 mt-0.5 text-white/50 font-serif italic text-[8.5px] sm:text-[9.5px] tracking-wide"
+          >
             <span>Crafted with creativity & attention to detail</span>
-            <span className="text-[8px] text-[#FFD700]/70">❖</span>
-          </p>
+            <span className="text-[#FFD700] not-italic">♡</span>
+          </motion.div>
 
         </div>
-      </footer>
-    </>
+      </div>
+    </footer>
   );
 };
 
 export default Footer;
-

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
@@ -7,9 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import MobileOnlyWarning from './components/MobileOnlyWarning';
 import Footer from './components/Footer';
 import Preloader from './components/Preloader';
-
-
-
+import { AudioProvider, useAudio } from './context/AudioContext';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -19,20 +16,14 @@ const ScrollToTop = () => {
   return null;
 };
 
-const NavigationHandler: React.FC<{
-  isPlaying: boolean;
-  setIsPlaying: (val: boolean) => void;
-  audioRef: React.MutableRefObject<HTMLAudioElement | null>
-}> = ({ isPlaying, setIsPlaying, audioRef }) => {
+const NavigationHandler: React.FC = () => {
+  const { isPlaying, pauseMusic } = useAudio();
   const location = useLocation();
 
   useEffect(() => {
-    // When the path changes (navigation to a different page)
-    // or when the location key changes (re-navigating to the same page/Home)
-    // we stop the background music as requested.
-    if (isPlaying && audioRef.current) {
-      audioRef.current.pause();
-      setIsPlaying(false);
+    // When the path changes or re-navigates to Home
+    if (isPlaying) {
+      pauseMusic();
     }
   }, [location.pathname, location.key]);
 
@@ -89,7 +80,6 @@ const Layout: React.FC<{
 
   return (
     <div className="relative min-h-screen bg-transparent">
-
       {/* Music Toggle Button with Gentle Pulse Glow */}
       <div className="fixed bottom-6 right-6 z-[60]">
         <motion.button
@@ -99,6 +89,7 @@ const Layout: React.FC<{
           whileHover={{ scale: 1.15 }}
           whileTap={{ scale: 0.9 }}
           className="w-14 h-14 bg-gradient-to-tr from-[#FFD700] via-[#FFE57F] to-[#FFD700] text-[#800000] rounded-full flex items-center justify-center border-2 border-white shadow-2xl transition-all"
+          aria-label="Toggle Background Music"
         >
           {isPlaying ? (
             <motion.div
@@ -123,6 +114,7 @@ const Layout: React.FC<{
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="w-14 h-14 bg-[#FFD700] text-[#800000] rounded-full flex flex-col items-center justify-center gap-1.5 shadow-[0_0_20px_rgba(255,215,0,0.4)] border-2 border-white transition-all active:scale-90 hover:scale-105"
+          aria-label="Toggle Menu"
         >
           <div className={`w-6 h-0.5 bg-[#800000] transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></div>
           <div className={`w-6 h-0.5 bg-[#800000] transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`}></div>
@@ -145,11 +137,6 @@ const Layout: React.FC<{
                     href={link.path}
                     onClick={() => {
                       setIsMenuOpen(false);
-                      // If navigating within the page, we might want to keep music?
-                      // But the user said "switching from that page" should stop it.
-                      // If they consider sections as "pages", they might want it to stop.
-                      // However, most users would want it to continue.
-                      // I will only stop it if they navigate to 'Home' specially.
                     }}
                     className={`text-3xl md:text-5xl font-traditional transition-all hover:tracking-widest ${activeSection === link.id && location.pathname === '/' ? 'text-[#FFD700] scale-110 blur-0' : 'text-white/40 hover:text-white'
                       }`}
@@ -162,7 +149,7 @@ const Layout: React.FC<{
                     onClick={() => {
                       setIsMenuOpen(false);
                       if (link.id === 'hero') {
-                        onGoHome(); // This will stop music and show welcome screen
+                        onGoHome();
                       }
                     }}
                     className={`text-3xl md:text-5xl font-traditional transition-all hover:tracking-widest ${location.pathname === link.path ? 'text-[#FFD700] scale-110 blur-0' : 'text-white/40 hover:text-white'
@@ -185,14 +172,13 @@ const Layout: React.FC<{
       <Footer />
     </div>
   );
-}
+};
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { isPlaying, playMusic, pauseMusic, toggleMusic } = useAudio();
   const [petals, setPetals] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     // Generate rich petal & sparkle properties
@@ -211,49 +197,24 @@ const App: React.FC = () => {
       isSymbol: i % 3 === 0
     }));
     setPetals(newPetals);
-
-    // Initialize audio
-    audioRef.current = new Audio('/1.mp3');
-    audioRef.current.loop = true;
   }, []);
 
   const handleOpenInvitation = () => {
     setShowWelcome(false);
-    if (audioRef.current) {
-      audioRef.current.play().catch(e => console.error("Audio play failed:", e));
-      setIsPlaying(true);
-    }
-  };
-
-  const stopMusic = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    }
-  };
-
-  const toggleMusic = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play().catch(e => console.error("Audio play failed:", e));
-      }
-      setIsPlaying(!isPlaying);
-    }
+    playMusic();
   };
 
   const goHome = () => {
-    stopMusic();
+    pauseMusic();
     setShowWelcome(true);
     window.scrollTo(0, 0);
   };
 
   return (
-    <Router>
+    <>
       <ScrollToTop />
       <MobileOnlyWarning />
-      <NavigationHandler isPlaying={isPlaying} setIsPlaying={setIsPlaying} audioRef={audioRef} />
+      <NavigationHandler />
 
       <AnimatePresence>
         {showWelcome && (
@@ -268,7 +229,7 @@ const App: React.FC = () => {
       </AnimatePresence>
 
       {/* Petal & Sparkle Falling Animation */}
-      {petals.map(petal => (
+      {petals.map((petal) => (
         <div
           key={petal.id}
           className="petal"
@@ -309,16 +270,25 @@ const App: React.FC = () => {
       <Layout
         isPlaying={isPlaying}
         onToggleMusic={toggleMusic}
-        onStopMusic={stopMusic}
+        onStopMusic={pauseMusic}
         onGoHome={goHome}
       >
         <Routes>
           <Route path="/" element={<Home />} />
         </Routes>
       </Layout>
-    </Router>
+    </>
   );
 };
 
+const App: React.FC = () => {
+  return (
+    <AudioProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </AudioProvider>
+  );
+};
 
 export default App;
